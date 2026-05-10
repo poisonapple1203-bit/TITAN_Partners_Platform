@@ -32,10 +32,7 @@ export function AssetCharts() {
   const [currentPrices, setCurrentPrices] = useState<Record<string, number>>({});
   const [exchangeRate, setExchangeRate] = useState<number>(FALLBACK_EXCHANGE_RATE);
   const [isLoadingFX, setIsLoadingFX] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
   const loadData = async () => {
-    setIsRefreshing(true);
     // 1. Fetch Exchange Rate
     const rate = await fetchExchangeRate();
     setExchangeRate(rate);
@@ -63,7 +60,6 @@ export function AssetCharts() {
         });
       }
     }
-    setIsRefreshing(false);
   };
 
   useEffect(() => {

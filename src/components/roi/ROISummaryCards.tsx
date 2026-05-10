@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Target, ArrowUpRight, Percent, Layers } from 'lucide-react';
+import { Target, ArrowUpRight, Layers } from 'lucide-react';
 import { useROIStore } from '../../store/useROIStore';
 
 export function ROISummaryCards() {
