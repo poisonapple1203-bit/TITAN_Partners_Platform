@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { Clock } from 'lucide-react';
 import { useROIStore, type ROIRecord } from '../../store/useROIStore';
+import { ConfirmModal } from '../ConfirmModal';
 
 export function ROIHistoryTable() {
   const { records, deleteRecord, updateRecord, nicknames } = useROIStore();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
+  
+  // Modal State
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   // Group by timestamp to compare A and B at the same time
   const timestamps = Array.from(new Set(records.map(h => `${h.date} ${h.time}`))).sort().reverse();
@@ -25,6 +30,19 @@ export function ROIHistoryTable() {
       await updateRecord(entry.id, val, entry.user, entry.date, entry.time);
     }
     setEditingId(null);
+  };
+
+  const requestDelete = (id: string) => {
+    setPendingDeleteId(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (pendingDeleteId) {
+      await deleteRecord(pendingDeleteId);
+    }
+    setIsDeleteModalOpen(false);
+    setPendingDeleteId(null);
   };
 
   if (timestamps.length === 0) return null;
@@ -102,7 +120,7 @@ export function ROIHistoryTable() {
                         수정
                       </button>
                       <button 
-                        onClick={() => deleteRecord(entryA.id)}
+                        onClick={() => requestDelete(entryA.id)}
                         className="px-2 py-1 rounded-md bg-danger/10 border border-danger/20 text-[10px] font-bold text-danger/80 hover:text-danger hover:bg-danger/20 transition-all"
                       >
                         삭제
@@ -130,7 +148,7 @@ export function ROIHistoryTable() {
                       />
                     </div>
                   ) : (
-                    <span className={`text-lg font-black ${entryB ? 'text-amber-400' : 'text-white/10 italic text-xs'}`}>
+                    <span className={`text-lg font-black ${entryB ? 'text-amber-400' : 'text-secondary'}`}>
                       {entryB ? `${entryB.rate.toFixed(2)}%` : '미입력'}
                     </span>
                   )}
@@ -143,7 +161,7 @@ export function ROIHistoryTable() {
                         수정
                       </button>
                       <button 
-                        onClick={() => deleteRecord(entryB.id)}
+                        onClick={() => requestDelete(entryB.id)}
                         className="px-2 py-1 rounded-md bg-danger/10 border border-danger/20 text-[10px] font-bold text-danger/80 hover:text-danger hover:bg-danger/20 transition-all"
                       >
                         삭제
@@ -164,6 +182,16 @@ export function ROIHistoryTable() {
           );
         })}
       </div>
+
+      {/* Global Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="수익률 기록 삭제"
+        message="정말 이 수익률 기록을 삭제하시겠습니까? 삭제된 데이터는 복구할 수 없습니다."
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+        confirmText="영구 삭제"
+      />
     </div>
   );
 }
