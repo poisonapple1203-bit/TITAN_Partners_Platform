@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #3b82f6; /* Electric Blue */
+  --color-primary-dark: #2563eb;
+  --color-background-dark: #0f172a; /* Deep Navy / Charcoal */
+  --color-surface-dark: #1e293b;
+  --color-success: #10b981; /* Emerald */
+  --color-danger: #ef4444; /* Crimson Red */
+  
+  --font-sans: 'Pretendard', 'Inter', system-ui, sans-serif;
+  
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+}
+
+@layer base {
+  :root {
+    --bg-main: var(--color-background-dark);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+  }
+
+  html, body {
+    background-color: #000; /* Outer desktop background */
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Scrollbar hiding for clean UI */
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+}
+
+/* App Shell styles for Desktop */
+.app-container {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  position: relative;
+  overflow-x: hidden;
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.1); /* Subtle blue glow */
+}
+
+/* Safe area inset for mobile */
+.safe-padding-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
