@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Edit2, Trash2, Clock, Info } from 'lucide-react';
+import { Clock, Info, Edit2, Trash2 } from 'lucide-react';
 import { useROIStore, type ROIRecord } from '../../store/useROIStore';
 
 export function ROIHistoryTable() {
@@ -30,8 +30,9 @@ export function ROIHistoryTable() {
   if (timestamps.length === 0) return null;
 
   return (
-    <div className="bg-surface-dark rounded-3xl border border-white/5 shadow-xl overflow-hidden">
-      <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+    <div className="flex flex-col gap-6">
+      {/* Title Section */}
+      <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl bg-primary/10 text-primary">
             <Clock className="w-5 h-5" />
@@ -46,38 +47,36 @@ export function ROIHistoryTable() {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-white/[0.01]">
-              <th className="px-6 py-4 text-[11px] font-black text-text-muted uppercase tracking-widest">날짜</th>
-              <th className="px-6 py-4 text-[11px] font-black text-text-muted uppercase tracking-widest text-center">{nicknames.A}</th>
-              <th className="px-6 py-4 text-[11px] font-black text-text-muted uppercase tracking-widest text-center">{nicknames.B}</th>
-              <th className="px-6 py-4 text-[11px] font-black text-text-muted uppercase tracking-widest text-right">배율 (Ratio)</th>
-              <th className="px-6 py-4 text-[11px] font-black text-text-muted uppercase tracking-widest text-center">관리</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/[0.03]">
-            {timestamps.map((ts) => {
-              const entryA = getEntry(ts, 'A');
-              const entryB = getEntry(ts, 'B');
-              const ratio = (entryA && entryB && entryB.rate !== 0) 
-                ? (entryA.rate / entryB.rate).toFixed(2) 
-                : null;
+      {/* Card List - Legacy Style */}
+      <div className="grid grid-cols-1 gap-4">
+        {timestamps.map((ts) => {
+          const entryA = getEntry(ts, 'A');
+          const entryB = getEntry(ts, 'B');
+          const [date, time] = ts.split(' ');
+          const ratio = (entryA && entryB && entryB.rate !== 0) 
+            ? (entryA.rate / entryB.rate).toFixed(2) 
+            : null;
 
-              return (
-                <tr key={ts} className="hover:bg-white/[0.02] transition-colors group">
-                  {/* Timestamp */}
-                  <td className="px-6 py-5">
-                    <div className="flex flex-col">
-                      <span className="text-sm font-bold text-white leading-none mb-1">{ts.split(' ')[0]}</span>
-                      <span className="text-[10px] text-text-muted font-medium">{ts.split(' ')[1]}</span>
-                    </div>
-                  </td>
+          return (
+            <div key={ts} className="bg-surface-dark rounded-3xl border border-white/5 shadow-xl overflow-hidden flex flex-col divide-y divide-white/[0.03]">
+              {/* Row: Date */}
+              <div className="px-6 py-4 flex justify-between items-center">
+                <span className="text-xs font-bold text-text-muted uppercase tracking-widest">날짜</span>
+                <span className="text-sm font-black text-white">{date}</span>
+              </div>
 
-                  {/* User A ROI */}
-                  <td className="px-6 py-5 text-center">
-                    {editingId === entryA?.id ? (
+              {/* Row: Time */}
+              <div className="px-6 py-4 flex justify-between items-center">
+                <span className="text-xs font-bold text-text-muted uppercase tracking-widest">시간</span>
+                <span className="text-sm font-black text-white">{time}</span>
+              </div>
+
+              {/* Row: User A */}
+              <div className="px-6 py-4 flex justify-between items-center bg-primary/5">
+                <span className="text-xs font-bold text-primary/60 uppercase tracking-widest">{nicknames.A}</span>
+                <div className="flex items-center gap-3">
+                  {editingId === entryA?.id ? (
+                    <div className="flex items-center gap-2">
                       <input
                         type="number"
                         step="0.01"
@@ -88,16 +87,37 @@ export function ROIHistoryTable() {
                         autoFocus
                         className="w-20 bg-background-dark border border-primary/50 rounded-lg px-2 py-1 text-sm text-center text-white focus:outline-none"
                       />
-                    ) : (
-                      <span className={`text-base font-black ${entryA ? 'text-primary' : 'text-white/10 italic text-xs'}`}>
-                        {entryA ? `${entryA.rate.toFixed(2)}%` : '미입력'}
-                      </span>
-                    )}
-                  </td>
+                    </div>
+                  ) : (
+                    <span className={`text-lg font-black ${entryA ? 'text-primary' : 'text-white/10 italic text-xs'}`}>
+                      {entryA ? `${entryA.rate.toFixed(2)}%` : '미입력'}
+                    </span>
+                  )}
+                  {entryA && (
+                    <div className="flex gap-1 ml-2">
+                      <button 
+                        onClick={() => handleEdit(entryA)}
+                        className="px-2 py-1 rounded-md bg-white/5 border border-white/5 text-[10px] font-bold text-text-muted hover:text-white hover:bg-white/10 transition-all"
+                      >
+                        수정
+                      </button>
+                      <button 
+                        onClick={() => deleteRecord(entryA.id)}
+                        className="px-2 py-1 rounded-md bg-danger/10 border border-danger/20 text-[10px] font-bold text-danger/80 hover:text-danger hover:bg-danger/20 transition-all"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
 
-                  {/* User B ROI */}
-                  <td className="px-6 py-5 text-center">
-                    {editingId === entryB?.id ? (
+              {/* Row: User B */}
+              <div className="px-6 py-4 flex justify-between items-center bg-amber-400/5">
+                <span className="text-xs font-bold text-amber-400/60 uppercase tracking-widest">{nicknames.B}</span>
+                <div className="flex items-center gap-3">
+                  {editingId === entryB?.id ? (
+                    <div className="flex items-center gap-2">
                       <input
                         type="number"
                         step="0.01"
@@ -108,67 +128,41 @@ export function ROIHistoryTable() {
                         autoFocus
                         className="w-20 bg-background-dark border border-primary/50 rounded-lg px-2 py-1 text-sm text-center text-white focus:outline-none"
                       />
-                    ) : (
-                      <span className={`text-base font-black ${entryB ? 'text-secondary' : 'text-white/10 italic text-xs'}`}>
-                        {entryB ? `${entryB.rate.toFixed(2)}%` : '미입력'}
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Ratio */}
-                  <td className="px-6 py-5 text-right">
-                    {ratio ? (
-                      <div className="flex flex-col items-end">
-                        <span className="text-xl font-black text-white tracking-tighter">
-                          {ratio}배
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="text-white/5">—</span>
-                    )}
-                  </td>
-
-                  {/* Actions */}
-                  <td className="px-6 py-5">
-                    <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {entryA && (
-                        <div className="flex flex-col items-center gap-1 p-1 rounded-lg bg-white/5 border border-white/5">
-                          <span className="text-[8px] font-bold text-primary uppercase">{nicknames.A}</span>
-                          <div className="flex gap-1">
-                            <button onClick={() => handleEdit(entryA)} className="p-1.5 hover:bg-primary/20 rounded-md text-text-muted hover:text-primary transition-colors">
-                              <Edit2 className="w-3 h-3" />
-                            </button>
-                            <button onClick={() => deleteRecord(entryA.id)} className="p-1.5 hover:bg-danger/20 rounded-md text-text-muted hover:text-danger transition-colors">
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                      {entryB && (
-                        <div className="flex flex-col items-center gap-1 p-1 rounded-lg bg-white/5 border border-white/5">
-                          <span className="text-[8px] font-bold text-secondary uppercase">{nicknames.B}</span>
-                          <div className="flex gap-1">
-                            <button onClick={() => handleEdit(entryB)} className="p-1.5 hover:bg-secondary/20 rounded-md text-text-muted hover:text-secondary transition-colors">
-                              <Edit2 className="w-3 h-3" />
-                            </button>
-                            <button onClick={() => deleteRecord(entryB.id)} className="p-1.5 hover:bg-danger/20 rounded-md text-text-muted hover:text-danger transition-colors">
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-                          </div>
-                        </div>
-                      )}
                     </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                  ) : (
+                    <span className={`text-lg font-black ${entryB ? 'text-amber-400' : 'text-white/10 italic text-xs'}`}>
+                      {entryB ? `${entryB.rate.toFixed(2)}%` : '미입력'}
+                    </span>
+                  )}
+                  {entryB && (
+                    <div className="flex gap-1 ml-2">
+                      <button 
+                        onClick={() => handleEdit(entryB)}
+                        className="px-2 py-1 rounded-md bg-white/5 border border-white/5 text-[10px] font-bold text-text-muted hover:text-white hover:bg-white/10 transition-all"
+                      >
+                        수정
+                      </button>
+                      <button 
+                        onClick={() => deleteRecord(entryB.id)}
+                        className="px-2 py-1 rounded-md bg-danger/10 border border-danger/20 text-[10px] font-bold text-danger/80 hover:text-danger hover:bg-danger/20 transition-all"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
 
-      <div className="p-4 bg-white/[0.01] border-t border-white/5 flex items-center gap-2">
-        <Info className="w-3.5 h-3.5 text-text-muted" />
-        <p className="text-[11px] text-text-muted font-medium">동일 시점의 데이터를 비교하여 배율을 자동 계산합니다. 행에 마우스를 올리면 수정/삭제가 가능합니다.</p>
+              {/* Row: Ratio */}
+              <div className="px-6 py-4 flex justify-between items-center">
+                <span className="text-xs font-bold text-text-muted uppercase tracking-widest">배율</span>
+                <span className="text-lg font-black text-white">
+                  {ratio ? `${ratio}배` : '—'}
+                </span>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
