@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Clock, Info, Edit2, Trash2 } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { useROIStore, type ROIRecord } from '../../store/useROIStore';
 
 export function ROIHistoryTable() {
