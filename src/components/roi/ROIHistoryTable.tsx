@@ -50,7 +50,7 @@ export function ROIHistoryTable() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-white/[0.01]">
-              <th className="px-6 py-4 text-[11px] font-black text-text-muted uppercase tracking-widest">기록 시점</th>
+              <th className="px-6 py-4 text-[11px] font-black text-text-muted uppercase tracking-widest">날짜</th>
               <th className="px-6 py-4 text-[11px] font-black text-text-muted uppercase tracking-widest text-center">{nicknames.A}</th>
               <th className="px-6 py-4 text-[11px] font-black text-text-muted uppercase tracking-widest text-center">{nicknames.B}</th>
               <th className="px-6 py-4 text-[11px] font-black text-text-muted uppercase tracking-widest text-right">배율 (Ratio)</th>
@@ -119,8 +119,9 @@ export function ROIHistoryTable() {
                   <td className="px-6 py-5 text-right">
                     {ratio ? (
                       <div className="flex flex-col items-end">
-                        <span className="text-lg font-black text-warning leading-none">{ratio}배</span>
-                        <span className="text-[9px] text-text-muted font-bold mt-1 uppercase tracking-tighter">A / B Ratio</span>
+                        <span className="text-xl font-black text-white tracking-tighter">
+                          {ratio}배
+                        </span>
                       </div>
                     ) : (
                       <span className="text-white/5">—</span>
