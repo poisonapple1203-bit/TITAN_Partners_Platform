@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Wallet, PieChart, ArrowUpRight, ArrowDownRight, Activity } from 'lucide-react';
+import { TrendingUp, Wallet, PieChart, ArrowUpRight, Activity } from 'lucide-react';
 import { useAssetStore } from '../../store/useAssetStore';
 import { useProfitStore } from '../../store/useProfitStore';
 import { useROIStore } from '../../store/useROIStore';

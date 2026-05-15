@@ -89,14 +89,19 @@ export const useROIStore = create<ROIState>((set, get) => ({
 
 // Initialize Listeners
 export const initROISync = () => {
-  onValue(ref(db, 'nicknames'), (snapshot) => {
+  const unsubNicknames = onValue(ref(db, 'nicknames'), (snapshot) => {
     const val = snapshot.val();
     if (val) useROIStore.getState().setNicknames(val);
   });
 
-  onValue(ref(db, 'records'), (snapshot) => {
+  const unsubRecords = onValue(ref(db, 'records'), (snapshot) => {
     const val = snapshot.val();
     const records = val ? Object.values(val) as ROIRecord[] : [];
     useROIStore.getState().setRecords(records);
   });
+
+  return () => {
+    unsubNicknames();
+    unsubRecords();
+  };
 };
