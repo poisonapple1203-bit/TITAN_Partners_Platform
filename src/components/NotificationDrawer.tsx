@@ -26,12 +26,12 @@ export function NotificationDrawer({ isOpen, onClose }: NotificationDrawerProps)
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-            className="absolute top-0 right-0 bottom-0 w-3/4 max-w-[300px] bg-surface-dark border-l border-white/5 z-50 flex flex-col shadow-2xl"
+            className="absolute top-0 right-0 bottom-0 w-[60%] max-w-[240px] bg-surface-dark border-l border-white/5 z-50 flex flex-col shadow-2xl"
           >
             <div className="p-6 flex justify-between items-center border-b border-white/5">
               <div className="flex items-center gap-2">
                 <Bell className="w-5 h-5 text-primary" />
-                <h2 className="text-xl font-bold">Notifications</h2>
+                <h2 className="text-xl font-bold">Noti</h2>
               </div>
               <button onClick={onClose} className="p-2 -mr-2 rounded-full hover:bg-white/5 text-text-muted">
                 <X className="w-5 h-5" />

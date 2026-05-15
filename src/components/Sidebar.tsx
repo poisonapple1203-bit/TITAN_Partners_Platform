@@ -45,7 +45,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-            className="absolute top-0 left-0 bottom-0 w-3/4 max-w-[300px] bg-surface-dark border-r border-white/5 z-50 flex flex-col shadow-2xl"
+            className="absolute top-0 left-0 bottom-0 w-[60%] max-w-[240px] bg-surface-dark border-r border-white/5 z-50 flex flex-col shadow-2xl"
           >
             <div className="p-6 flex justify-between items-center border-b border-white/5">
               <h2 className="text-xl font-bold text-primary">Menu</h2>
@@ -58,7 +58,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <ul className="flex flex-col gap-1 px-3">
                 {menuItems.map((item) => (
                   <li key={item.id}>
-                    <button 
+                    <button
                       onClick={() => handleNavigation(item.path)}
                       className="w-full flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-left"
                     >
@@ -71,7 +71,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             </div>
 
             <div className="p-4 border-t border-white/5 safe-padding-bottom">
-              <button 
+              <button
                 onClick={() => {
                   logout();
                   onClose();

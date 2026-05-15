@@ -19,6 +19,7 @@ export function ProfitHistoryTable() {
   const [recordToDelete, setRecordToDelete] = useState<string | null>(null);
 
   const filteredRecords = records
+    .filter(r => r.user === selectedUser)
     .filter(r => selectedTicker === 'ALL' || r.ticker === selectedTicker)
     .filter(r => {
       const rDate = parseRecordDate(r.date);
@@ -94,7 +95,7 @@ export function ProfitHistoryTable() {
       <div className="py-4 px-6 border-b border-white/5 flex flex-col">
 
         <div className="flex items-end gap-4">
-          <span className="text-sm text-text-muted font-medium mb-1">총 수익</span>
+          <span className="text-sm text-text-muted font-medium mb-1">{selectedUser}님의 총 수익</span>
           <span className={`text-3xl font-bold tracking-tight ${isPositiveTotal ? 'text-success' : isNegativeTotal ? 'text-danger' : 'text-white'}`}>
             {isPositiveTotal ? '+' : ''}{totalProfit.toLocaleString()}
           </span>

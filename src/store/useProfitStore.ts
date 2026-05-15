@@ -27,12 +27,14 @@ export interface ProfitRecord {
 interface ProfitState {
   records: ProfitRecord[];
   tickers: string[];
+  userNames: string[];
   selectedUser: string;
   selectedTicker: string;
   selectedPeriod: PeriodType;
   dateRange: DateRange;
   
   setSelectedPeriod: (period: PeriodType) => void;
+  setSelectedUser: (user: string) => void;
   setSelectedTicker: (ticker: string) => void;
   setDateRange: (range: DateRange) => void;
   
@@ -55,9 +57,10 @@ export function parseRecordDate(dateStr: string): Date {
 const COLLECTION_NAME = 'records_new';
 
 export const useProfitStore = create<ProfitState>()(
-  immer((set, get) => ({
+  immer((set) => ({
     records: [],
     tickers: ['SOXL', 'TQQQ'],
+    userNames: ['조핏', '봉핏'],
     selectedUser: '조핏',
     selectedTicker: 'ALL',
     selectedPeriod: '전체',
@@ -75,6 +78,10 @@ export const useProfitStore = create<ProfitState>()(
       } else {
         state.dateRange = { from: new Date(2020, 0, 1), to: today };
       }
+    }),
+
+    setSelectedUser: (user) => set((state) => {
+      state.selectedUser = user;
     }),
     
     setSelectedTicker: (ticker) => set((state) => { state.selectedTicker = ticker; }),
