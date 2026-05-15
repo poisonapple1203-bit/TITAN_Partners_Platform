@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { TrendingUp, Wallet, PieChart, ArrowUpRight, Activity } from 'lucide-react';
 import { useAssetStore } from '../../store/useAssetStore';
@@ -7,6 +8,7 @@ import { useROIStore } from '../../store/useROIStore';
 import { fetchMarketPrices, normalizeTicker, fetchExchangeRate } from '../../services/assetMarketData';
 
 export function ServiceSummaryCards() {
+  const navigate = useNavigate();
   // --- Asset Data ---
   const assetRecords = useAssetStore((state) => state.records);
   const [assetPrices, setAssetPrices] = useState<Record<string, number>>({});
@@ -93,7 +95,8 @@ export function ServiceSummaryCards() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-surface-dark border border-white/5 p-6 rounded-[2.5rem] shadow-xl relative overflow-hidden group"
+        onClick={() => navigate('/asset')}
+        className="bg-surface-dark border border-white/5 p-6 rounded-[2.5rem] shadow-xl relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform"
       >
         <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-[80px] -mr-16 -mt-16 pointer-events-none group-hover:bg-primary/20 transition-all duration-700"></div>
         
@@ -137,7 +140,8 @@ export function ServiceSummaryCards() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-surface-dark border border-white/5 p-6 rounded-[2rem] flex flex-col gap-4 relative overflow-hidden group"
+          onClick={() => navigate('/profit')}
+          className="bg-surface-dark border border-white/5 p-6 rounded-[2rem] flex flex-col gap-4 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-full blur-3xl -mr-8 -mt-8 pointer-events-none group-hover:bg-success/10 transition-all"></div>
           
@@ -162,7 +166,8 @@ export function ServiceSummaryCards() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-surface-dark border border-white/5 p-6 rounded-[2rem] flex flex-col gap-4 relative overflow-hidden group"
+          onClick={() => navigate('/roi')}
+          className="bg-surface-dark border border-white/5 p-6 rounded-[2rem] flex flex-col gap-4 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-3xl -mr-8 -mt-8 pointer-events-none group-hover:bg-purple-500/10 transition-all"></div>
 
