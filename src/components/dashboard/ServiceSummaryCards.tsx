@@ -89,44 +89,37 @@ export function ServiceSummaryCards() {
   }, [roiRecords]);
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-5 w-full">
       {/* 1. Main Asset Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         onClick={() => navigate('/asset')}
-        className="bg-surface-dark border border-white/5 p-6 rounded-[2.5rem] shadow-xl relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform"
+        className="bg-surface-dark border border-white/5 p-7 rounded-[2rem] shadow-xl relative overflow-hidden group cursor-pointer active:scale-[0.99] transition-all"
       >
-        <div className="absolute top-0 right-0 w-48 h-48 bg-primary/10 rounded-full blur-[80px] -mr-16 -mt-16 pointer-events-none group-hover:bg-primary/20 transition-all duration-700"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -mr-20 -mt-20 pointer-events-none group-hover:bg-primary/10 transition-all duration-700"></div>
         
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
-            <Wallet className="w-5 h-5 text-primary" />
-          </div>
-          <span className="text-sm font-bold text-text-muted tracking-tight">자산 요약 현황</span>
-        </div>
-
-        <div className="flex flex-col gap-1 mb-8">
-          <span className="text-text-muted text-xs font-medium uppercase tracking-widest opacity-60">총 평가 금액</span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-black text-white tracking-tighter">
+        <div className="flex flex-col gap-1.5 mb-10">
+          <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] opacity-80 mb-1">자산 요약 현황</span>
+          <div className="flex items-baseline gap-2.5">
+            <span className="text-3xl font-black text-white tracking-tighter">
               ₩{assetSummary.evaluatedTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}
             </span>
-            <div className={`flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-black ${assetSummary.returnRate >= 0 ? 'bg-danger/10 text-danger' : 'bg-primary/10 text-primary'}`}>
+            <span className={`text-xs font-bold ${assetSummary.returnRate >= 0 ? 'text-danger' : 'text-primary'}`}>
               {assetSummary.returnRate >= 0 ? '+' : ''}{assetSummary.returnRate.toFixed(1)}%
-            </div>
+            </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/5">
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider opacity-50">총 투자 원금</span>
-            <span className="text-sm font-bold text-white/90">₩{assetSummary.principalTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+        <div className="grid grid-cols-2 gap-8 pt-6 border-t border-white/5">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-40">총 투자 원금</span>
+            <span className="text-sm font-bold text-white/80 tracking-tight">₩{assetSummary.principalTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
           </div>
-          <div className="flex flex-col gap-0.5 text-right">
-            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider opacity-50">수익률 현황</span>
-            <span className={`text-sm font-black ${assetSummary.returnRate >= 0 ? 'text-danger' : 'text-primary'}`}>
+          <div className="flex flex-col gap-1 text-right">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest opacity-40">평가 손익</span>
+            <span className={`text-sm font-black tracking-tight ${assetSummary.returnRate >= 0 ? 'text-danger' : 'text-primary'}`}>
               {assetSummary.returnRate >= 0 ? '+' : ''}{(assetSummary.evaluatedTotal - assetSummary.principalTotal).toLocaleString(undefined, { maximumFractionDigits: 0 })}
             </span>
           </div>
@@ -137,50 +130,36 @@ export function ServiceSummaryCards() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Cumulative Profit Card */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           onClick={() => navigate('/profit')}
-          className="bg-surface-dark border border-white/5 p-6 rounded-[2rem] flex flex-col gap-4 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform"
+          className="bg-surface-dark border border-white/5 p-6 rounded-3xl flex flex-col gap-4 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-all"
         >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-full blur-3xl -mr-8 -mt-8 pointer-events-none group-hover:bg-success/10 transition-all"></div>
+          <div className="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none group-hover:bg-success/10 transition-all"></div>
           
-          <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded-xl bg-success/10 flex items-center justify-center border border-success/20">
-              <TrendingUp className="w-4 h-4 text-success" />
-            </div>
-            <ArrowUpRight className="w-4 h-4 text-text-muted group-hover:text-success transition-colors" />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider opacity-60">{selectedUser} 누적 수익</span>
-            <span className={`text-2xl font-black tracking-tight ${totalProfit >= 0 ? 'text-success' : 'text-danger'}`}>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] font-black text-success uppercase tracking-[0.15em] opacity-70">{selectedUser} 누적 수익</span>
+            <span className={`text-xl font-black tracking-tight ${totalProfit >= 0 ? 'text-success' : 'text-danger'}`}>
               {totalProfit >= 0 ? '+' : ''}{totalProfit.toLocaleString()}
-              <span className="text-xs font-bold text-text-muted ml-1 opacity-40">KRW</span>
+              <span className="text-[10px] font-bold text-text-muted ml-1 opacity-30 uppercase">KRW</span>
             </span>
           </div>
         </motion.div>
 
         {/* ROI User A Card */}
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
+          initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
           onClick={() => navigate('/roi')}
-          className="bg-surface-dark border border-white/5 p-6 rounded-[2rem] flex flex-col gap-4 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform"
+          className="bg-surface-dark border border-white/5 p-6 rounded-3xl flex flex-col gap-4 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-all"
         >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-3xl -mr-8 -mt-8 pointer-events-none group-hover:bg-purple-500/10 transition-all"></div>
+          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none group-hover:bg-purple-500/10 transition-all"></div>
 
-          <div className="flex items-center justify-between">
-            <div className="w-8 h-8 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-              <Activity className="w-4 h-4 text-purple-400" />
-            </div>
-            <PieChart className="w-4 h-4 text-text-muted group-hover:text-purple-400 transition-colors" />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider opacity-60">조핏(User A) 수익률</span>
-            <span className="text-2xl font-black text-purple-400 tracking-tight">
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[10px] font-black text-purple-400 uppercase tracking-[0.15em] opacity-70">조핏(User A) 수익률</span>
+            <span className="text-xl font-black text-purple-400 tracking-tight">
               {userAROI.toFixed(2)}%
             </span>
           </div>

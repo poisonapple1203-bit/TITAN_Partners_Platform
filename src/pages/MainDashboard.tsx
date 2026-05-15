@@ -100,11 +100,11 @@ export function MainDashboard() {
       >
         {/* Hero Section */}
         <section>
-          <div className="flex flex-col gap-1 px-1">
-            <p className="text-text-muted text-sm font-medium opacity-70">안녕하세요,</p>
-            <h2 className="text-3xl font-black tracking-tight text-white">
+          <div className="flex flex-col gap-0.5 px-1">
+            <p className="text-text-muted text-[10px] font-black opacity-40 uppercase tracking-[0.15em]">안녕하세요,</p>
+            <h2 className="text-2xl font-black tracking-tight text-white">
               {user?.nickname || user?.name || '조대현'}님
-              <span className="text-primary ml-1">.</span>
+              <span className="text-primary ml-0.5">.</span>
             </h2>
           </div>
         </section>
