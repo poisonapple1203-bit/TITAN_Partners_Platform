@@ -5,6 +5,10 @@ import { LogOut, Trash2, Menu, Bell } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Sidebar } from '../components/Sidebar';
 import { NotificationDrawer } from '../components/NotificationDrawer';
+import { ServiceSummaryCards } from '../components/dashboard/ServiceSummaryCards';
+import { useAssetStore, loadFromServer } from '../store/useAssetStore';
+import { initProfitSync } from '../store/useProfitStore';
+import { initROISync } from '../store/useROIStore';
 
 export function MainDashboard() {
   const navigate = useNavigate();
@@ -17,11 +21,29 @@ export function MainDashboard() {
   const [isNotiOpen, setIsNotiOpen] = useState(false);
 
   useEffect(() => {
+    // 1. Sidebar open check
     if (location.state?.openSidebar) {
       setIsSidebarOpen(true);
-      // Clear the state so it doesn't reopen on subsequent re-renders or regular back navigation
       navigate(location.pathname, { replace: true, state: {} });
     }
+
+    // 2. ROI & Profit Real-time Sync
+    const unsubROI = initROISync();
+    const unsubProfit = initProfitSync();
+
+    // 3. Asset Cloud Load
+    const syncAssetData = async () => {
+      const cloudData = await loadFromServer();
+      if (cloudData) {
+        useAssetStore.setState(cloudData);
+      }
+    };
+    syncAssetData();
+
+    return () => {
+      unsubROI();
+      unsubProfit();
+    };
   }, [location, navigate]);
 
   const handleHeaderClick = () => {
@@ -74,25 +96,26 @@ export function MainDashboard() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="flex-1 flex flex-col gap-6 px-6 pt-6"
+        className="flex-1 flex flex-col gap-8 px-6 pt-6"
       >
-        <section className="bg-surface-dark p-6 rounded-3xl border border-white/5 shadow-lg relative overflow-hidden">
-          {/* Subtle gradient accent */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
-
-          <p className="text-text-muted text-sm mb-1">환영합니다,</p>
-          <h2 className="text-3xl font-bold mb-6 relative z-10">{user?.nickname || user?.name}님</h2>
-          
-          <div className="bg-background-dark/50 p-4 rounded-2xl flex items-center justify-between relative z-10">
-            <div>
-              <p className="text-text-muted text-xs">총 자산 (Mock)</p>
-              <p className="text-2xl font-semibold mt-1">₩ 0</p>
-            </div>
-            <div className="text-right">
-              <p className="text-text-muted text-xs">수익률</p>
-              <p className="text-lg font-medium text-success mt-1">0.00%</p>
-            </div>
+        {/* Hero Section */}
+        <section>
+          <div className="flex flex-col gap-1 px-1">
+            <p className="text-text-muted text-sm font-medium opacity-70">안녕하세요,</p>
+            <h2 className="text-3xl font-black tracking-tight text-white">
+              {user?.nickname || user?.name || '조대현'}님
+              <span className="text-primary ml-1">.</span>
+            </h2>
           </div>
+        </section>
+
+        {/* Integrated Service Summaries */}
+        <section className="flex flex-col gap-4">
+          <div className="flex items-center justify-between px-1">
+            <h3 className="text-xs font-black text-text-muted uppercase tracking-[0.2em] opacity-40">나의 투자 요약</h3>
+            <div className="h-[1px] flex-1 bg-white/5 ml-4"></div>
+          </div>
+          <ServiceSummaryCards />
         </section>
 
         {/* Temporary Developer Settings for Testing */}
