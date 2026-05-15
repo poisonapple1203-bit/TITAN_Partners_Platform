@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { startOfMonth, endOfMonth, startOfYear, endOfYear } from 'date-fns';
+import { firestore } from '../lib/firebase';
+import {
+  collection, addDoc, onSnapshot, query, orderBy,
+  serverTimestamp, deleteDoc, doc, updateDoc,
+} from 'firebase/firestore';
 
 export type PeriodType = '전체' | '일별' | '월별' | '연별';
 
@@ -16,6 +21,7 @@ export interface ProfitRecord {
   date: string; // YYYY.MM.DD
   time: string; // HH:MM
   profit: number;
+  createdAt: number;
 }
 
 interface ProfitState {
@@ -30,12 +36,13 @@ interface ProfitState {
   setSelectedTicker: (ticker: string) => void;
   setDateRange: (range: DateRange) => void;
   
-  addRecord: (record: Omit<ProfitRecord, 'id'>) => void;
-  deleteRecord: (id: string) => void;
-  updateRecord: (id: string, record: Omit<ProfitRecord, 'id'>) => void;
+  addRecord: (record: Omit<ProfitRecord, 'id' | 'createdAt'>) => Promise<void>;
+  deleteRecord: (id: string) => Promise<void>;
+  updateRecord: (id: string, record: Omit<ProfitRecord, 'id' | 'createdAt'>) => Promise<void>;
   
   addTicker: (ticker: string) => void;
   deleteTicker: (ticker: string) => void;
+  setRecords: (records: ProfitRecord[]) => void;
 }
 
 // 레코드 날짜 문자열("YYYY.MM.DD")을 Date로 파싱하는 유틸
@@ -44,16 +51,12 @@ export function parseRecordDate(dateStr: string): Date {
   return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
 }
 
-const mockRecords: ProfitRecord[] = [
-  { id: '1', user: '조핏', ticker: 'SOXL', date: '2026.05.06', time: '06:50', profit: 1464209 },
-  { id: '2', user: '조핏', ticker: 'SOXL', date: '2026.04.24', time: '23:46', profit: 100080 },
-  { id: '3', user: '조핏', ticker: 'SOXL', date: '2026.04.22', time: '06:09', profit: 225657 },
-  { id: '4', user: '조핏', ticker: 'SOXL', date: '2026.04.17', time: '06:09', profit: 168423 },
-];
+// ─── Firestore Collection Reference ──────────────────
+const COLLECTION_NAME = 'records_new';
 
 export const useProfitStore = create<ProfitState>()(
-  immer((set) => ({
-    records: mockRecords,
+  immer((set, get) => ({
+    records: [],
     tickers: ['SOXL', 'TQQQ'],
     selectedUser: '조핏',
     selectedTicker: 'ALL',
@@ -78,20 +81,39 @@ export const useProfitStore = create<ProfitState>()(
     
     setDateRange: (range) => set((state) => { state.dateRange = range; }),
     
-    addRecord: (recordData) => set((state) => {
-      state.records.unshift({ ...recordData, id: Date.now().toString() });
-    }),
+    setRecords: (records) => set((state) => { state.records = records; }),
     
-    deleteRecord: (id) => set((state) => {
-      state.records = state.records.filter((r) => r.id !== id);
-    }),
-    
-    updateRecord: (id, recordData) => set((state) => {
-      const index = state.records.findIndex((r) => r.id === id);
-      if (index !== -1) {
-        state.records[index] = { ...recordData, id };
+    addRecord: async (recordData) => {
+      try {
+        await addDoc(collection(firestore, COLLECTION_NAME), {
+          ...recordData,
+          createdAt: serverTimestamp(),
+        });
+        console.log('[Firestore] Record added ✓');
+      } catch (e) {
+        console.error('[Firestore] Failed to add record:', e);
       }
-    }),
+    },
+    
+    deleteRecord: async (id) => {
+      try {
+        await deleteDoc(doc(firestore, COLLECTION_NAME, id));
+        console.log('[Firestore] Record deleted ✓');
+      } catch (e) {
+        console.error('[Firestore] Failed to delete record:', e);
+      }
+    },
+    
+    updateRecord: async (id, recordData) => {
+      try {
+        await updateDoc(doc(firestore, COLLECTION_NAME, id), {
+          ...recordData,
+        });
+        console.log('[Firestore] Record updated ✓');
+      } catch (e) {
+        console.error('[Firestore] Failed to update record:', e);
+      }
+    },
     
     addTicker: (ticker) => set((state) => {
       if (!state.tickers.includes(ticker)) {
@@ -107,3 +129,30 @@ export const useProfitStore = create<ProfitState>()(
     }),
   }))
 );
+
+// ─── Firestore Real-time Sync (like initROISync) ─────
+export const initProfitSync = () => {
+  const q = query(collection(firestore, COLLECTION_NAME), orderBy('createdAt', 'desc'));
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const records: ProfitRecord[] = [];
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      records.push({
+        id: docSnap.id,
+        user: data.user,
+        ticker: data.ticker,
+        date: data.date,
+        time: data.time,
+        profit: data.profit,
+        createdAt: data.createdAt?.toMillis ? data.createdAt.toMillis() : Date.now(),
+      });
+    });
+    useProfitStore.getState().setRecords(records);
+    console.log(`[Firestore] Profit records synced: ${records.length} records ✓`);
+  }, (error) => {
+    console.error('[Firestore] Error subscribing to profit records:', error);
+  });
+
+  return unsubscribe;
+};

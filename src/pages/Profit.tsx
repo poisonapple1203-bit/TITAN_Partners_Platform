@@ -6,7 +6,8 @@ import { ProfitHistoryTable } from '../components/profit/ProfitHistoryTable';
 import { ProfitSummaryCard } from '../components/profit/ProfitSummaryCard';
 import { TickerSelector } from '../components/profit/TickerSelector';
 import { PeriodDatePicker } from '../components/profit/PeriodDatePicker';
-import { useProfitStore, type PeriodType } from '../store/useProfitStore';
+import { useProfitStore, type PeriodType, initProfitSync } from '../store/useProfitStore';
+import { useEffect } from 'react';
 
 const PERIODS: PeriodType[] = ['전체', '연별', '월별', '일별'];
 
@@ -14,6 +15,11 @@ export function Profit() {
   const navigate = useNavigate();
   const selectedPeriod = useProfitStore((state) => state.selectedPeriod);
   const setSelectedPeriod = useProfitStore((state) => state.setSelectedPeriod);
+
+  useEffect(() => {
+    const unsubscribe = initProfitSync();
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-[100dvh] bg-background-dark text-text-main pb-12">
