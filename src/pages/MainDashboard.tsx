@@ -16,6 +16,7 @@ export function MainDashboard() {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const resetAccount = useAuthStore((state) => state.resetAccount);
+  const syncNickname = useAuthStore((state) => state.syncNickname);
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isNotiOpen, setIsNotiOpen] = useState(false);
@@ -30,6 +31,9 @@ export function MainDashboard() {
     // 2. ROI & Profit Real-time Sync
     const unsubROI = initROISync();
     const unsubProfit = initProfitSync();
+
+    // 3. User Profile Sync
+    syncNickname();
 
     // 3. Asset Cloud Load
     const syncAssetData = async () => {

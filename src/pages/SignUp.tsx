@@ -9,11 +9,11 @@ export function SignUp() {
   const setNickname = useAuthStore((state) => state.setNickname);
   const [nicknameInput, setNicknameInput] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (nicknameInput.trim().length < 2) return;
     
-    setNickname(nicknameInput.trim());
+    await setNickname(nicknameInput.trim());
     navigate('/main');
   };
 

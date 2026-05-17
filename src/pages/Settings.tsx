@@ -29,7 +29,7 @@ export function Settings() {
     }
   }, [user?.nickname]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const trimmed = nicknameInput.trim();
     if (!trimmed) {
       setError('닉네임을 입력해주세요.');
@@ -48,12 +48,11 @@ export function Settings() {
     setIsSaving(true);
     setError('');
 
-    // Simulate API delay
-    setTimeout(() => {
-      setNickname(trimmed);
-      setIsSaving(false);
-      navigate('/main', { replace: true }); // Go straight to main
-    }, 600);
+    // Save to Firestore and Local State
+    await setNickname(trimmed);
+    
+    setIsSaving(false);
+    navigate('/main', { replace: true }); // Go straight to main
   };
 
   return (
