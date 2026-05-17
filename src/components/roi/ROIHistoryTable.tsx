@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Clock } from 'lucide-react';
+import { Clock, Pencil, Trash2, Check, X } from 'lucide-react';
 import { useROIStore, type ROIRecord } from '../../store/useROIStore';
 import { ConfirmModal } from '../ConfirmModal';
+import { getDisplayName } from '../../utils/userUtils';
 
 export function ROIHistoryTable() {
   const { records, deleteRecord, updateRecord, nicknames } = useROIStore();
@@ -91,7 +92,7 @@ export function ROIHistoryTable() {
 
               {/* Row: User A */}
               <div className="px-6 py-4 flex justify-between items-center bg-primary/5">
-                <span className="text-xs font-bold text-primary/60 uppercase tracking-widest">{nicknames.A}</span>
+                <span className="text-sm font-bold text-blue-400 uppercase tracking-widest">{getDisplayName(nicknames.A)}</span>
                 <div className="flex items-center gap-3">
                   {editingId === entryA?.id ? (
                     <div className="flex items-center gap-2">
@@ -105,25 +106,33 @@ export function ROIHistoryTable() {
                         autoFocus
                         className="w-20 bg-background-dark border border-primary/50 rounded-lg px-2 py-1 text-sm text-center text-white focus:outline-none"
                       />
+                      <button onClick={() => handleUpdate(entryA!)} className="p-1 text-success hover:bg-success/10 rounded-md">
+                        <Check className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => setEditingId(null)} className="p-1 text-text-muted hover:bg-white/10 rounded-md">
+                        <X className="w-4 h-4" />
+                      </button>
                     </div>
                   ) : (
                     <span className={`text-lg font-black ${entryA ? 'text-primary' : 'text-white/10 italic text-xs'}`}>
                       {entryA ? `${entryA.rate.toFixed(2)}%` : '미입력'}
                     </span>
                   )}
-                  {entryA && (
+                  {entryA && editingId !== entryA?.id && (
                     <div className="flex gap-1 ml-2">
                       <button 
                         onClick={() => handleEdit(entryA)}
-                        className="px-2 py-1 rounded-md bg-white/5 border border-white/5 text-[10px] font-bold text-text-muted hover:text-white hover:bg-white/10 transition-all"
+                        className="p-1.5 rounded-md text-text-muted hover:text-white hover:bg-white/10 transition-all"
+                        aria-label="수정"
                       >
-                        수정
+                        <Pencil className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => requestDelete(entryA.id)}
-                        className="px-2 py-1 rounded-md bg-danger/10 border border-danger/20 text-[10px] font-bold text-danger/80 hover:text-danger hover:bg-danger/20 transition-all"
+                        className="p-1.5 rounded-md text-text-muted hover:text-danger hover:bg-danger/10 transition-all"
+                        aria-label="삭제"
                       >
-                        삭제
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   )}
@@ -132,7 +141,7 @@ export function ROIHistoryTable() {
 
               {/* Row: User B */}
               <div className="px-6 py-4 flex justify-between items-center bg-amber-400/5">
-                <span className="text-xs font-bold text-amber-400/60 uppercase tracking-widest">{nicknames.B}</span>
+                <span className="text-sm font-bold text-amber-400 uppercase tracking-widest">{nicknames.B}</span>
                 <div className="flex items-center gap-3">
                   {editingId === entryB?.id ? (
                     <div className="flex items-center gap-2">
@@ -146,25 +155,33 @@ export function ROIHistoryTable() {
                         autoFocus
                         className="w-20 bg-background-dark border border-primary/50 rounded-lg px-2 py-1 text-sm text-center text-white focus:outline-none"
                       />
+                      <button onClick={() => handleUpdate(entryB!)} className="p-1 text-success hover:bg-success/10 rounded-md">
+                        <Check className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => setEditingId(null)} className="p-1 text-text-muted hover:bg-white/10 rounded-md">
+                        <X className="w-4 h-4" />
+                      </button>
                     </div>
                   ) : (
                     <span className={`text-lg font-black ${entryB ? 'text-amber-400' : 'text-secondary'}`}>
                       {entryB ? `${entryB.rate.toFixed(2)}%` : '미입력'}
                     </span>
                   )}
-                  {entryB && (
+                  {entryB && editingId !== entryB?.id && (
                     <div className="flex gap-1 ml-2">
                       <button 
                         onClick={() => handleEdit(entryB)}
-                        className="px-2 py-1 rounded-md bg-white/5 border border-white/5 text-[10px] font-bold text-text-muted hover:text-white hover:bg-white/10 transition-all"
+                        className="p-1.5 rounded-md text-text-muted hover:text-white hover:bg-white/10 transition-all"
+                        aria-label="수정"
                       >
-                        수정
+                        <Pencil className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => requestDelete(entryB.id)}
-                        className="px-2 py-1 rounded-md bg-danger/10 border border-danger/20 text-[10px] font-bold text-danger/80 hover:text-danger hover:bg-danger/20 transition-all"
+                        className="p-1.5 rounded-md text-text-muted hover:text-danger hover:bg-danger/10 transition-all"
+                        aria-label="삭제"
                       >
-                        삭제
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   )}
@@ -172,10 +189,10 @@ export function ROIHistoryTable() {
               </div>
 
               {/* Row: Ratio */}
-              <div className="px-6 py-4 flex justify-between items-center">
-                <span className="text-xs font-bold text-text-muted uppercase tracking-widest">배율</span>
-                <span className="text-lg font-black text-white">
-                  {ratio ? `${ratio}배` : '—'}
+              <div className="px-6 py-5 flex justify-between items-center bg-white/[0.02]">
+                <span className="text-xs font-bold text-text-muted uppercase tracking-widest">수익률 배율</span>
+                <span className="text-2xl font-black text-success drop-shadow-md">
+                  {ratio ? `${ratio} 배` : '—'}
                 </span>
               </div>
             </div>

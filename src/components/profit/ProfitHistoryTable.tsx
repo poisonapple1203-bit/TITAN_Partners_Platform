@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { startOfDay, endOfDay } from 'date-fns';
+import { Pencil, Trash2, Check, X } from 'lucide-react';
 import { useProfitStore, parseRecordDate, type ProfitRecord } from '../../store/useProfitStore';
 import { ConfirmModal } from '../ConfirmModal';
+import { getDisplayName } from '../../utils/userUtils';
 
 export function ProfitHistoryTable() {
   const records = useProfitStore((state) => state.records);
@@ -90,17 +92,7 @@ export function ProfitHistoryTable() {
 
   return (
     <div className="bg-surface-dark border border-white/5 rounded-3xl overflow-hidden flex flex-col mt-4">
-      
-      {/* 상단: 티커 및 총 수익 정보 */}
-      <div className="py-4 px-6 border-b border-white/5 flex flex-col">
-
-        <div className="flex items-end gap-4">
-          <span className="text-sm text-text-muted font-medium mb-1">{selectedUser}님의 총 수익</span>
-          <span className={`text-3xl font-bold tracking-tight ${isPositiveTotal ? 'text-success' : isNegativeTotal ? 'text-danger' : 'text-white'}`}>
-            {isPositiveTotal ? '+' : ''}{totalProfit.toLocaleString()}
-          </span>
-        </div>
-      </div>
+      {/* 하단: 스크롤 가능한 기록 테이블 */}
 
       {/* 하단: 스크롤 가능한 기록 테이블 */}
       <div className="flex-1 overflow-x-auto">
@@ -154,15 +146,17 @@ export function ProfitHistoryTable() {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => handleEditSave(record.id)}
-                            className="px-2 py-1 text-[10px] font-bold text-background-dark bg-success rounded-md hover:bg-success/80"
+                            className="p-1.5 text-success hover:bg-success/10 rounded-md transition-colors"
+                            aria-label="저장"
                           >
-                            저장
+                            <Check className="w-4 h-4" />
                           </button>
                           <button
                             onClick={handleEditCancel}
-                            className="px-2 py-1 text-[10px] text-text-muted border border-white/10 rounded-md hover:bg-white/5"
+                            className="p-1.5 text-text-muted hover:bg-white/10 rounded-md transition-colors"
+                            aria-label="취소"
                           >
-                            취소
+                            <X className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
@@ -185,15 +179,17 @@ export function ProfitHistoryTable() {
                       <div className="flex items-center justify-end gap-2">
                         <button 
                           onClick={() => handleEditStart(record)}
-                          className="px-2 py-1 text-[10px] text-text-muted border border-white/10 rounded-md hover:bg-white/5"
+                          className="p-1.5 text-text-muted hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                          aria-label="수정"
                         >
-                          수정
+                          <Pencil className="w-4 h-4" />
                         </button>
                         <button 
                           onClick={() => setRecordToDelete(record.id)}
-                          className="px-2 py-1 text-[10px] text-danger border border-danger/20 rounded-md hover:bg-danger/10"
+                          className="p-1.5 text-text-muted hover:text-danger hover:bg-danger/10 rounded-md transition-colors"
+                          aria-label="삭제"
                         >
-                          삭제
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>

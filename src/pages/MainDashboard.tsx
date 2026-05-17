@@ -84,10 +84,14 @@ export function MainDashboard() {
             <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
           </button>
 
-          <div className="w-8 h-8 rounded-full bg-surface-dark flex items-center justify-center border border-white/10 ml-1">
-            <span className="text-primary text-xs font-bold">
-              {user?.nickname?.[0] || user?.name?.[0] || 'U'}
-            </span>
+          <div className="w-8 h-8 rounded-full bg-surface-dark flex items-center justify-center border border-white/10 ml-1 overflow-hidden">
+            {user?.photoUrl ? (
+              <img src={user.photoUrl} alt="profile" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-primary text-xs font-bold">
+                {user?.nickname?.[0] || user?.name?.[0] || 'U'}
+              </span>
+            )}
           </div>
         </div>
       </header>
@@ -104,7 +108,7 @@ export function MainDashboard() {
             <p className="text-text-muted text-[10px] font-black opacity-40 uppercase tracking-[0.15em]">안녕하세요,</p>
             <h2 className="text-2xl font-black tracking-tight text-white">
               {user?.nickname || user?.name || '조대현'}님
-              <span className="text-primary ml-0.5">.</span>
+              <span className="text-white ml-0.5">.</span>
             </h2>
           </div>
         </section>

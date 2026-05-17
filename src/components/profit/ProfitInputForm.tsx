@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { Calendar, Clock, DollarSign } from 'lucide-react';
 import { useProfitStore } from '../../store/useProfitStore';
 import { DayPicker } from './PeriodDatePicker';
 import { TimePicker } from '../TimePicker';
+import { UserSelector } from './UserSelector';
+import { TickerSelector } from './TickerSelector';
 
 export function ProfitInputForm() {
   const addRecord = useProfitStore((state) => state.addRecord);
@@ -79,56 +82,79 @@ export function ProfitInputForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div className="flex gap-4">
-        <div className="relative flex-1 flex flex-col gap-1.5" ref={popoverRef}>
-          <label className="text-xs text-text-muted px-1">날짜</label>
-          <input 
-            type="text" 
-            value={date}
-            readOnly
-            onClick={() => setIsDatePickerOpen(true)}
-            className="w-full bg-background-dark border border-white/5 rounded-2xl px-4 py-3.5 text-center text-sm text-white font-medium focus:outline-none focus:border-primary transition-colors cursor-pointer"
-          />
-          {isDatePickerOpen && (
-            <div className="absolute top-full left-0 mt-2 z-50 bg-surface-dark border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden animate-in fade-in slide-in-from-top-1">
-              <DayPicker
-                year={pickerYear}
-                month={pickerMonth}
-                selectedDate={getSelectedDateObj()}
-                onChangeMonth={(y, m) => { setPickerYear(y); setPickerMonth(m); }}
-                onSelect={(d) => {
-                  setDate(`${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`);
-                  setIsDatePickerOpen(false);
-                }}
-              />
+    <div className="bg-surface-dark p-6 rounded-3xl border border-white/5 shadow-xl relative z-20">
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 relative z-10">
+        <UserSelector />
+        
+        <TickerSelector />
+
+        {/* Date & Time Row */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2 relative" ref={popoverRef}>
+            <div className="flex items-center gap-2 px-1 text-text-muted">
+              <Calendar className="w-3.5 h-3.5" />
+              <label className="text-xs font-bold uppercase tracking-wider">날짜</label>
             </div>
-          )}
+            <button
+              type="button"
+              onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+              className="w-full bg-background-dark border border-white/5 rounded-2xl px-4 py-4 text-center text-sm text-white font-medium focus:outline-none focus:border-primary transition-all hover:bg-white/5"
+            >
+              {date}
+            </button>
+            {isDatePickerOpen && (
+              <div className="absolute top-full left-0 mt-2 z-50 bg-surface-dark border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden animate-in fade-in slide-in-from-top-1">
+                <DayPicker
+                  year={pickerYear}
+                  month={pickerMonth}
+                  selectedDate={getSelectedDateObj()}
+                  onChangeMonth={(y, m) => { setPickerYear(y); setPickerMonth(m); }}
+                  onSelect={(d) => {
+                    setDate(`${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`);
+                    setIsDatePickerOpen(false);
+                  }}
+                />
+              </div>
+            )}
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2 px-1 text-text-muted">
+              <Clock className="w-3.5 h-3.5" />
+              <label className="text-xs font-bold uppercase tracking-wider">시간</label>
+            </div>
+            <TimePicker value={time} onChange={setTime} />
+          </div>
         </div>
-        <div className="flex-1 flex flex-col gap-1.5">
-          <label className="text-xs text-text-muted px-1">시간</label>
-          <TimePicker value={time} onChange={setTime} />
+
+        {/* Profit Input */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 px-1 text-text-muted">
+            <DollarSign className="w-3.5 h-3.5" />
+            <label className="text-xs font-bold uppercase tracking-wider">수익 금액 (KRW)</label>
+          </div>
+          <div className="relative group">
+            <input 
+              type="text" 
+              inputMode="numeric"
+              value={profit}
+              onChange={(e) => handleNumberFormat(e.target.value)}
+              placeholder="0"
+              className="w-full bg-background-dark border border-white/5 rounded-2xl px-5 py-5 text-right font-black text-2xl text-white placeholder:text-white/20 focus:outline-none focus:border-primary transition-all group-hover:border-white/10"
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs text-text-muted px-1">수익</label>
-        <input 
-          type="text" 
-          inputMode="numeric"
-          value={profit}
-          onChange={(e) => handleNumberFormat(e.target.value)}
-          placeholder="0"
-          className="w-full bg-background-dark border border-white/5 rounded-2xl px-5 py-4 text-right font-bold text-lg text-white placeholder:text-white/20 focus:outline-none focus:border-primary transition-colors"
-        />
-      </div>
-
-      <button 
-        type="submit"
-        className="w-full mt-2 bg-success text-background-dark font-bold py-4 rounded-2xl flex items-center justify-center transition-all active:scale-[0.98] shadow-[0_0_15px_rgba(34,197,94,0.3)]"
-      >
-        <span>저장</span>
-      </button>
-    </form>
+        <button 
+          type="submit"
+          className="w-full bg-primary hover:bg-primary-dark text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-primary/20 group"
+        >
+          <span>저장</span>
+        </button>
+      </form>
+    </div>
   );
 }

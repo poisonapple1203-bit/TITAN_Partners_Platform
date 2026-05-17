@@ -21,6 +21,7 @@ export function Landing() {
         id: `google-user-${Date.now()}`,
         name: 'Mock User',
         email: 'user@example.com',
+        photoUrl: 'https://lh3.googleusercontent.com/a/default-user=s96-c',
         nickname: isNewUser ? undefined : 'TitanInvestor',
       };
       

@@ -4,8 +4,6 @@ import { motion } from 'framer-motion';
 import { ProfitInputForm } from '../components/profit/ProfitInputForm';
 import { ProfitHistoryTable } from '../components/profit/ProfitHistoryTable';
 import { ProfitSummaryCard } from '../components/profit/ProfitSummaryCard';
-import { TickerSelector } from '../components/profit/TickerSelector';
-import { UserSelector } from '../components/profit/UserSelector';
 import { PeriodDatePicker } from '../components/profit/PeriodDatePicker';
 import { useProfitStore, type PeriodType, initProfitSync } from '../store/useProfitStore';
 import { useEffect } from 'react';
@@ -40,11 +38,6 @@ export function Profit() {
         transition={{ duration: 0.3 }}
         className="flex-1 p-4 md:p-6 flex flex-col gap-6"
       >
-        <section className="px-1">
-          <UserSelector />
-          <TickerSelector />
-        </section>
-
         <section>
           <ProfitInputForm />
         </section>

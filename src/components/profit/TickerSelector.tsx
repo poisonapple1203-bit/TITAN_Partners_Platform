@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Activity, Plus, X } from 'lucide-react';
 import { useProfitStore } from '../../store/useProfitStore';
 
 export function TickerSelector() {
@@ -30,8 +30,12 @@ export function TickerSelector() {
   };
 
   return (
-    <div className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-hide">
-      <button
+    <div className="flex items-center gap-3">
+      <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">
+        <Activity className="w-5 h-5" />
+      </div>
+      <div className="flex-1 flex items-center gap-2 overflow-x-auto py-1 scrollbar-hide">
+        <button
         onClick={() => setSelectedTicker('ALL')}
         className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all shrink-0 ${
           selectedTicker === 'ALL'
@@ -86,6 +90,7 @@ export function TickerSelector() {
           <span>추가</span>
         </button>
       )}
+      </div>
     </div>
   );
 }

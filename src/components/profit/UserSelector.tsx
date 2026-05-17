@@ -1,4 +1,6 @@
+import { User } from 'lucide-react';
 import { useProfitStore } from '../../store/useProfitStore';
+import { getDisplayName } from '../../utils/userUtils';
 
 export function UserSelector() {
   const userNames = useProfitStore((state) => state.userNames);
@@ -6,20 +8,22 @@ export function UserSelector() {
   const setSelectedUser = useProfitStore((state) => state.setSelectedUser);
 
   return (
-    <div className="flex items-center justify-end gap-2 mb-2 px-1">
-      <span className="text-xs text-text-muted font-medium mr-1">사용자:</span>
-      <div className="flex bg-background-dark/50 border border-white/5 rounded-xl p-1">
+    <div className="flex items-center gap-3">
+      <div className="p-2 rounded-xl bg-primary/10 text-primary">
+        <User className="w-5 h-5" />
+      </div>
+      <div className="flex-1 flex gap-2">
         {userNames.map((user) => (
           <button
             key={user}
             onClick={() => setSelectedUser(user)}
-            className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+            className={`flex-1 py-3 text-sm font-bold rounded-2xl border transition-all ${
               selectedUser === user
-                ? 'bg-primary text-background-dark shadow-lg shadow-primary/20 scale-105'
-                : 'text-text-muted hover:text-white/80 hover:bg-white/5'
+                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]'
+                : 'bg-background-dark border-white/5 text-text-muted hover:text-white/60'
             }`}
           >
-            {user}
+            {getDisplayName(user)}
           </button>
         ))}
       </div>

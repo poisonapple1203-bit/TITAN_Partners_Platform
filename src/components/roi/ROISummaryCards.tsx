@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Target, ArrowUpRight, Layers } from 'lucide-react';
 import { useROIStore } from '../../store/useROIStore';
+import { getDisplayName } from '../../utils/userUtils';
 
 export function ROISummaryCards() {
   const { records, selectedSnapshot, nicknames } = useROIStore();
@@ -18,7 +19,7 @@ export function ROISummaryCards() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <StatCard 
-        label={`${nicknames.A} 수익률`}
+        label={`${getDisplayName(nicknames.A)} 수익률`}
         value={rateA !== null ? `${rateA.toFixed(2)}%` : '-'}
         icon={<Target className="w-5 h-5 text-primary" />}
         color="primary"

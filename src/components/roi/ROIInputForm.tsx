@@ -3,6 +3,7 @@ import { User, Calendar, Clock, Info } from 'lucide-react';
 import { useROIStore } from '../../store/useROIStore';
 import { DayPicker } from '../profit/PeriodDatePicker';
 import { TimePicker } from '../TimePicker';
+import { getDisplayName } from '../../utils/userUtils';
 
 export function ROIInputForm() {
   const { currentUser, setCurrentUser, addRecord, nicknames } = useROIStore();
@@ -50,7 +51,7 @@ export function ROIInputForm() {
   };
 
   return (
-    <div className="bg-surface-dark p-6 rounded-3xl border border-white/5 shadow-xl relative">
+    <div className="bg-surface-dark p-6 rounded-3xl border border-white/5 shadow-xl relative z-20">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
       
@@ -60,29 +61,29 @@ export function ROIInputForm() {
           <div className="p-2 rounded-xl bg-primary/10 text-primary">
             <User className="w-5 h-5" />
           </div>
-          <div className="flex-1 bg-background-dark p-1 rounded-2xl border border-white/5 flex relative">
-            <div 
-              className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-surface-dark rounded-xl shadow-lg border border-white/10 transition-all duration-300 ease-out ${
-                currentUser === 'B' ? 'left-[calc(50%+2px)]' : 'left-1'
-              }`}
-            />
+          <div className="flex-1 flex gap-2">
+
             <button
               type="button"
               onClick={() => setCurrentUser('A')}
-              className={`flex-1 py-2.5 text-sm font-bold rounded-xl z-10 transition-colors ${
-                currentUser === 'A' ? 'text-white' : 'text-text-muted hover:text-white/60'
+              className={`flex-1 py-3 text-sm font-bold rounded-2xl border transition-all ${
+                currentUser === 'A' 
+                  ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]' 
+                  : 'bg-background-dark border-white/5 text-text-muted hover:text-white/60'
               }`}
             >
-              {nicknames.A} 모드
+              {getDisplayName(nicknames.A)} 모드
             </button>
             <button
               type="button"
               onClick={() => setCurrentUser('B')}
-              className={`flex-1 py-2.5 text-sm font-bold rounded-xl z-10 transition-colors ${
-                currentUser === 'B' ? 'text-white' : 'text-text-muted hover:text-white/60'
+              className={`flex-1 py-3 text-sm font-bold rounded-2xl border transition-all ${
+                currentUser === 'B' 
+                  ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]' 
+                  : 'bg-background-dark border-white/5 text-text-muted hover:text-white/60'
               }`}
             >
-              {nicknames.B} 모드
+              {getDisplayName(nicknames.B)} 모드
             </button>
           </div>
         </div>
@@ -139,18 +140,16 @@ export function ROIInputForm() {
               value={roi}
               onChange={(e) => setRoi(e.target.value)}
               onFocus={(e) => e.target.select()}
-              className="w-full bg-background-dark border border-white/5 rounded-2xl px-5 py-5 text-right font-black text-2xl text-white focus:outline-none focus:border-primary transition-all group-hover:border-white/10"
+              placeholder="0.00"
+              className="w-full bg-background-dark border border-white/5 rounded-2xl px-5 py-5 text-center font-black text-2xl text-white placeholder:text-white/20 focus:outline-none focus:border-primary transition-all group-hover:border-white/10"
             />
-            <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-              <span className="text-primary font-bold text-sm tracking-tighter uppercase opacity-50">Value</span>
-            </div>
           </div>
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-primary hover:bg-primary-light text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-primary/20 group"
+          className="w-full bg-primary hover:bg-primary-dark text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-primary/20 group"
         >
           <span>저장</span>
         </button>

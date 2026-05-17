@@ -1,5 +1,6 @@
 import { startOfDay, endOfDay } from 'date-fns';
 import { useProfitStore, parseRecordDate } from '../../store/useProfitStore';
+import { getDisplayName } from '../../utils/userUtils';
 
 export function ProfitSummaryCard() {
   const selectedPeriod = useProfitStore((state) => state.selectedPeriod);
@@ -28,7 +29,7 @@ export function ProfitSummaryCard() {
 
       <div className="flex items-center justify-between z-10">
         <h3 className="text-sm font-medium text-text-muted">
-          {selectedUser}님의 {selectedPeriod} 누적 수익 <span className="text-white/40 ml-1">| {selectedTicker === 'ALL' ? '전체 종목' : selectedTicker}</span>
+          {getDisplayName(selectedUser)}님의 {selectedPeriod} 누적 수익 <span className="text-white/40 ml-1">| {selectedTicker === 'ALL' ? '전체 종목' : selectedTicker}</span>
         </h3>
       </div>
       
