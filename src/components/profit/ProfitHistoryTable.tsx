@@ -32,8 +32,6 @@ export function ProfitHistoryTable() {
       if (dA !== dB) return dB - dA;
       return b.time.localeCompare(a.time);
     });
-  
-  const totalProfit = filteredRecords.reduce((acc, r) => acc + r.profit, 0);
 
   // 수정 시작: 해당 행을 입력 필드로 전환
   const handleEditStart = (record: ProfitRecord) => {
