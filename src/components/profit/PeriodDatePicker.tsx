@@ -255,7 +255,6 @@ export function DayPicker({
       {/* 요일 헤더 */}
       <div className="grid grid-cols-7 gap-1 mb-1 border-b border-white/5 pb-1">
         {weekdays.map((d, index) => {
-          const isWeekend = index === 0 || index === 6;
           return (
             <div 
               key={d} 
