@@ -48,7 +48,7 @@ export function ProfitInputForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!date || !time || !profit) {
       alert('모든 필드를 입력해주세요.');
       return;
@@ -88,7 +88,7 @@ export function ProfitInputForm() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 relative z-10">
         <UserSelector />
-        
+
         <TickerSelector />
 
         {/* Date & Time Row */}
@@ -120,7 +120,7 @@ export function ProfitInputForm() {
               </div>
             )}
           </div>
-          
+
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 px-1 text-text-muted">
               <Clock className="w-3.5 h-3.5" />
@@ -137,8 +137,8 @@ export function ProfitInputForm() {
             <label className="text-xs font-bold uppercase tracking-wider">수익 금액 (KRW)</label>
           </div>
           <div className="relative group">
-            <input 
-              type="text" 
+            <input
+              type="text"
               inputMode="numeric"
               value={profit}
               onChange={(e) => handleNumberFormat(e.target.value)}
@@ -148,7 +148,7 @@ export function ProfitInputForm() {
           </div>
         </div>
 
-        <button 
+        <button
           type="submit"
           className="w-full bg-primary hover:bg-primary-dark text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-primary/20 group"
         >

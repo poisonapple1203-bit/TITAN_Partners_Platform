@@ -36,6 +36,7 @@ export function TickerSelector() {
       </div>
       <div className="flex-1 flex items-center gap-2 overflow-x-auto py-1 scrollbar-hide">
         <button
+        type="button"
         onClick={() => setSelectedTicker('ALL')}
         className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all shrink-0 ${
           selectedTicker === 'ALL'
@@ -51,6 +52,7 @@ export function TickerSelector() {
         return (
           <button
             key={ticker}
+            type="button"
             onClick={() => setSelectedTicker(ticker)}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all shrink-0 ${
               isSelected
@@ -74,15 +76,16 @@ export function TickerSelector() {
             placeholder="AAPL"
             className="w-20 bg-background-dark border border-primary/40 rounded-full px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-primary"
           />
-          <button onClick={handleAdd} className="p-1.5 rounded-full bg-primary/20 text-primary hover:bg-primary/30">
+          <button type="button" onClick={handleAdd} className="p-1.5 rounded-full bg-primary/20 text-primary hover:bg-primary/30">
             <Plus className="w-4 h-4" />
           </button>
-          <button onClick={() => { setIsAdding(false); setNewTicker(''); }} className="p-1.5 rounded-full hover:bg-white/5 text-text-muted">
+          <button type="button" onClick={() => { setIsAdding(false); setNewTicker(''); }} className="p-1.5 rounded-full hover:bg-white/5 text-text-muted">
             <X className="w-4 h-4" />
           </button>
         </div>
       ) : (
         <button
+          type="button"
           onClick={() => setIsAdding(true)}
           className="flex items-center gap-1 px-3 py-2 rounded-full border border-dashed border-white/10 text-text-muted hover:text-white hover:border-white/20 transition-all shrink-0 text-sm"
         >

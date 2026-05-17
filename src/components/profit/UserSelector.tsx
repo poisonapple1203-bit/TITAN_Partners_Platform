@@ -16,6 +16,7 @@ export function UserSelector() {
         {userNames.map((user) => (
           <button
             key={user}
+            type="button"
             onClick={() => setSelectedUser(user)}
             className={`flex-1 py-3 text-sm font-bold rounded-2xl border transition-all ${
               selectedUser === user
