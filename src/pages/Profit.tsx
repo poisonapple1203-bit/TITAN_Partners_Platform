@@ -7,6 +7,7 @@ import { ProfitSummaryCard } from '../components/profit/ProfitSummaryCard';
 import { PeriodDatePicker } from '../components/profit/PeriodDatePicker';
 import { useProfitStore, type PeriodType, initProfitSync } from '../store/useProfitStore';
 import { useEffect } from 'react';
+import { useAuthStore } from '../store/useAuthStore';
 
 const PERIODS: PeriodType[] = ['전체', '연별', '월별', '일별'];
 
@@ -14,6 +15,7 @@ export function Profit() {
   const navigate = useNavigate();
   const selectedPeriod = useProfitStore((state) => state.selectedPeriod);
   const setSelectedPeriod = useProfitStore((state) => state.setSelectedPeriod);
+  const isGuest = useAuthStore((state) => state.isGuest);
 
   useEffect(() => {
     const unsubscribe = initProfitSync();
@@ -36,7 +38,7 @@ export function Profit() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="flex-1 p-4 md:p-6 flex flex-col gap-6"
+        className={`flex-1 p-4 md:p-6 flex flex-col gap-6 ${isGuest ? 'sensitive-data' : ''}`}
       >
         <section>
           <ProfitInputForm />

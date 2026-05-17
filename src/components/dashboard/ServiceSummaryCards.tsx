@@ -123,10 +123,10 @@ export function ServiceSummaryCards() {
         <div className="flex flex-col gap-1.5 mb-10">
           <span className="text-[12px] font-black text-primary uppercase tracking-[0.1em] opacity-80 mb-1">자산 요약 현황</span>
           <div className="flex items-baseline gap-2.5">
-            <span className="text-3xl font-black text-white tracking-tighter">
+            <span className="text-3xl font-black text-white tracking-tighter sensitive-data">
               ₩{assetSummary.evaluatedTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}
             </span>
-            <span className={`text-xs font-bold ${assetSummary.returnRate >= 0 ? 'text-danger' : 'text-primary'}`}>
+            <span className={`text-xs font-bold sensitive-data ${assetSummary.returnRate >= 0 ? 'text-danger' : 'text-primary'}`}>
               {assetSummary.returnRate >= 0 ? '+' : ''}{assetSummary.returnRate.toFixed(1)}%
             </span>
           </div>
@@ -135,11 +135,11 @@ export function ServiceSummaryCards() {
         <div className="grid grid-cols-2 gap-8 pt-6 border-t border-white/5">
           <div className="flex flex-col gap-1">
             <span className="text-[12px] font-black text-text-muted uppercase tracking-[0.1em] opacity-80">총 투자 원금</span>
-            <span className="text-[20px] font-black text-white tracking-tight">₩{assetSummary.principalTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+            <span className="text-[20px] font-black text-white tracking-tight sensitive-data">₩{assetSummary.principalTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
           </div>
           <div className="flex flex-col gap-1 text-right">
             <span className="text-[12px] font-black text-text-muted uppercase tracking-[0.1em] opacity-80">평가 손익</span>
-            <span className={`text-[20px] font-black tracking-tight ${assetSummary.returnRate >= 0 ? 'text-danger' : 'text-primary'}`}>
+            <span className={`text-[20px] font-black tracking-tight sensitive-data ${assetSummary.returnRate >= 0 ? 'text-danger' : 'text-primary'}`}>
               {assetSummary.returnRate >= 0 ? '+' : ''}{(assetSummary.evaluatedTotal - assetSummary.principalTotal).toLocaleString(undefined, { maximumFractionDigits: 0 })}
             </span>
           </div>
@@ -160,7 +160,7 @@ export function ServiceSummaryCards() {
           
           <div className="flex flex-col gap-1.5">
             <span className="text-[12px] font-black text-success uppercase tracking-[0.1em] opacity-80">누적 수익</span>
-            <span className={`text-xl font-black tracking-tight ${totalProfit >= 0 ? 'text-success' : 'text-danger'}`}>
+            <span className={`text-xl font-black tracking-tight sensitive-data ${totalProfit >= 0 ? 'text-success' : 'text-danger'}`}>
               {totalProfit >= 0 ? '+' : ''}{totalProfit.toLocaleString()}
               <span className="text-[10px] font-bold text-text-muted ml-1 opacity-30 uppercase">KRW</span>
             </span>
@@ -179,7 +179,7 @@ export function ServiceSummaryCards() {
 
           <div className="flex flex-col gap-1.5">
             <span className="text-[12px] font-black text-purple-400 uppercase tracking-[0.1em] opacity-80">미래에셋 수익률</span>
-            <span className="text-xl font-black text-purple-400 tracking-tight">
+            <span className="text-xl font-black text-purple-400 tracking-tight sensitive-data">
               {userROI.toFixed(2)}%
             </span>
           </div>

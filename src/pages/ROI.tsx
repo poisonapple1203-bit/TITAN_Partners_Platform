@@ -5,9 +5,11 @@ import { ChevronLeft } from 'lucide-react';
 import { ROIInputForm } from '../components/roi/ROIInputForm';
 import { ROIHistoryTable } from '../components/roi/ROIHistoryTable';
 import { initROISync } from '../store/useROIStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 export default function ROI() {
   const navigate = useNavigate();
+  const isGuest = useAuthStore((state) => state.isGuest);
 
   useEffect(() => {
     initROISync();
@@ -29,7 +31,7 @@ export default function ROI() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="flex-1 p-4 md:p-6 flex flex-col gap-6"
+        className={`flex-1 p-4 md:p-6 flex flex-col gap-6 ${isGuest ? 'sensitive-data' : ''}`}
       >
         {/* Input Form */}
         <ROIInputForm />

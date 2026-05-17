@@ -21,8 +21,10 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+  const isGuest = useAuthStore((state) => state.isGuest);
+
   return (
-    <div className="app-container">
+    <div className={`app-container ${isGuest ? 'guest-mode' : ''}`}>
       <Router>
         <Routes>
           <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />

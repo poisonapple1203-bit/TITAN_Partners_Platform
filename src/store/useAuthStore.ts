@@ -14,6 +14,7 @@ interface User {
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  isGuest: boolean;
   login: (userData: User) => void;
   setNickname: (nickname: string) => Promise<void>;
   syncNickname: () => Promise<void>;
@@ -26,7 +27,12 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       isAuthenticated: false,
-      login: (userData) => set({ user: userData, isAuthenticated: true }),
+      isGuest: false,
+      login: (userData) => {
+        const email = (userData.email || '').toLowerCase().trim();
+        const isGuest = email !== 'poisonapple1203@gmail.com' && email !== 'juribong2@gmail.com';
+        set({ user: userData, isAuthenticated: true, isGuest });
+      },
       
       setNickname: async (nickname) => {
         const { user } = get();
@@ -65,9 +71,9 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      logout: () => set({ user: null, isAuthenticated: false }),
+      logout: () => set({ user: null, isAuthenticated: false, isGuest: false }),
       resetAccount: () => {
-        set({ user: null, isAuthenticated: false });
+        set({ user: null, isAuthenticated: false, isGuest: false });
         localStorage.removeItem('titan-auth-storage'); // force clear
       },
     }),

@@ -6,12 +6,14 @@ import { AssetCharts } from '../components/asset/AssetCharts';
 import { AssetHistoryTable } from '../components/asset/AssetHistoryTable';
 import { useAssetStore, loadFromServer } from '../store/useAssetStore';
 import { useEffect } from 'react';
+import { useAuthStore } from '../store/useAuthStore';
 
 export function Asset() {
   const navigate = useNavigate();
   const users = useAssetStore((state) => state.users);
   const currentUserId = useAssetStore((state) => state.currentUserId);
   const setCurrentUser = useAssetStore((state) => state.setCurrentUser);
+  const isGuest = useAuthStore((state) => state.isGuest);
 
   // Load from cloud on mount
   useEffect(() => {
@@ -60,7 +62,7 @@ export function Asset() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="flex-1 p-4 md:p-6 flex flex-col gap-8 max-w-7xl mx-auto w-full"
+        className={`flex-1 p-4 md:p-6 flex flex-col gap-8 max-w-7xl mx-auto w-full ${isGuest ? 'sensitive-data' : ''}`}
       >
         {/* Charts Section */}
         <section>

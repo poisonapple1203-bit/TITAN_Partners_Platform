@@ -17,6 +17,7 @@ export function MainDashboard() {
   const logout = useAuthStore((state) => state.logout);
   const resetAccount = useAuthStore((state) => state.resetAccount);
   const syncNickname = useAuthStore((state) => state.syncNickname);
+  const isGuest = useAuthStore((state) => state.isGuest);
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isNotiOpen, setIsNotiOpen] = useState(false);
@@ -110,12 +111,36 @@ export function MainDashboard() {
         <section>
           <div className="flex flex-col gap-0.5 px-1">
             <p className="text-text-muted text-[10px] font-black opacity-40 uppercase tracking-[0.15em]">안녕하세요,</p>
-            <h2 className="text-2xl font-black tracking-tight text-white">
-              {user?.nickname || user?.name || '조대현'}님
+            <h2 className="text-2xl font-black tracking-tight text-white flex items-center gap-2">
+              <span className={isGuest ? "sensitive-data" : ""}>
+                {user?.nickname || user?.name || '조대현'}님
+              </span>
+              {isGuest && (
+                <span className="text-[10px] bg-primary/20 border border-primary/30 text-primary font-black px-2 py-0.5 rounded-full flex items-center gap-1 select-none">
+                  🔒 게스트 모드
+                </span>
+              )}
               <span className="text-white ml-0.5">.</span>
             </h2>
           </div>
         </section>
+
+        {/* Guest Warning Banner */}
+        {isGuest && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-primary/5 border border-primary/20 p-5 rounded-3xl flex flex-col gap-1.5 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-16 h-16 bg-primary/10 rounded-full blur-2xl -mr-4 -mt-4 pointer-events-none"></div>
+            <span className="text-xs font-black text-primary flex items-center gap-1.5 tracking-wider uppercase">
+              🔒 VIP 게스트 모드 활성화됨
+            </span>
+            <p className="text-text-muted text-[11px] leading-relaxed font-semibold">
+              본 플랫폼은 지정 파트너 전용 프라이빗 자산 플랫폼입니다. 등록되지 않은 게스트 계정은 모든 닉네임, 차트, 투자 자산 상세 수치가 블러 처리되어 제한적인 데모 화면만 열람하실 수 있습니다.
+            </p>
+          </motion.div>
+        )}
 
         {/* Integrated Service Summaries */}
         <section className="flex flex-col gap-4">
