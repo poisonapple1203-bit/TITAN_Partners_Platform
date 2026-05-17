@@ -111,10 +111,31 @@ export function DayPicker({
   onChangeMonth: (y: number, m: number) => void;
   onSelect: (date: Date) => void;
 }) {
+  const [viewMode, setViewMode] = useState<'days' | 'months' | 'years'>('days');
+  const [centerYear, setCenterYear] = useState(year);
+
+  // Sync year state when prop changes
+  useEffect(() => {
+    setCenterYear(year);
+  }, [year]);
+
   const daysInMonth = getDaysInMonth(new Date(year, month));
   const firstDayOfWeek = getDay(new Date(year, month, 1)); // 0=Sun
+
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const blanks = Array.from({ length: firstDayOfWeek }, (_, i) => i);
+
+  // Previous Month Days
+  const prevMonthDate = new Date(year, month - 1);
+  const daysInPrevMonth = getDaysInMonth(prevMonthDate);
+  const prevMonthDays = Array.from(
+    { length: firstDayOfWeek },
+    (_, i) => daysInPrevMonth - firstDayOfWeek + i + 1
+  );
+
+  // Next Month Days (to fill the grid to a consistent 42 cells)
+  const totalSlots = 42;
+  const nextMonthDaysCount = totalSlots - (firstDayOfWeek + daysInMonth);
+  const nextMonthDays = Array.from({ length: nextMonthDaysCount }, (_, i) => i + 1);
 
   const goPrev = () => {
     if (month === 0) onChangeMonth(year - 1, 11);
@@ -127,6 +148,93 @@ export function DayPicker({
 
   const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
 
+  if (viewMode === 'years') {
+    const startYear = centerYear - 4;
+    return (
+      <div className="p-4 w-[280px]">
+        {/* 헤더 */}
+        <div className="flex justify-between items-center mb-3 pb-2 border-b border-white/5">
+          <button type="button" onClick={() => setCenterYear(centerYear - 9)} className="p-1.5 rounded-lg hover:bg-white/5 text-text-muted hover:text-white">
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <span className="text-xs font-bold text-text-muted tracking-widest">
+            {startYear} – {startYear + 8}
+          </span>
+          <button type="button" onClick={() => setCenterYear(centerYear + 9)} className="p-1.5 rounded-lg hover:bg-white/5 text-text-muted hover:text-white">
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+        {/* 년도 그리드 */}
+        <div className="grid grid-cols-3 gap-2">
+          {Array.from({ length: 9 }, (_, i) => {
+            const yr = startYear + i;
+            const isSelected = selectedDate.getFullYear() === yr;
+            return (
+              <button type="button"
+                key={yr}
+                onClick={() => {
+                  setCenterYear(yr);
+                  setViewMode('months');
+                }}
+                className={`h-10 rounded-xl text-xs font-semibold transition-all ${
+                  isSelected
+                    ? 'bg-primary text-white font-black shadow-[0_0_12px_rgba(59,130,246,0.4)] scale-105'
+                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                {yr}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  if (viewMode === 'months') {
+    return (
+      <div className="p-4 w-[280px]">
+        {/* 헤더 */}
+        <div className="flex justify-between items-center mb-3 pb-2 border-b border-white/5">
+          <button type="button" onClick={() => setCenterYear(centerYear - 1)} className="p-1.5 rounded-lg hover:bg-white/5 text-text-muted hover:text-white">
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <span 
+            onClick={() => setViewMode('years')}
+            className="text-sm font-bold text-white tracking-widest cursor-pointer hover:text-primary transition-colors"
+          >
+            {centerYear}년
+          </span>
+          <button type="button" onClick={() => setCenterYear(centerYear + 1)} className="p-1.5 rounded-lg hover:bg-white/5 text-text-muted hover:text-white">
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+        {/* 월 그리드 */}
+        <div className="grid grid-cols-3 gap-2">
+          {Array.from({ length: 12 }, (_, i) => {
+            const isSelected = selectedDate.getFullYear() === centerYear && selectedDate.getMonth() === i;
+            return (
+              <button type="button"
+                key={i}
+                onClick={() => {
+                  onChangeMonth(centerYear, i);
+                  setViewMode('days');
+                }}
+                className={`h-10 rounded-xl text-xs font-semibold transition-all ${
+                  isSelected
+                    ? 'bg-primary text-white font-black shadow-[0_0_12px_rgba(59,130,246,0.4)] scale-105'
+                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                {i + 1}월
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 w-[280px]">
       {/* 헤더: 연월 이동 */}
@@ -134,42 +242,121 @@ export function DayPicker({
         <button type="button" onClick={goPrev} className="p-1.5 rounded-lg hover:bg-white/5 text-text-muted hover:text-white">
           <ChevronLeft className="w-4 h-4" />
         </button>
-        <span className="text-sm font-bold text-white tracking-wide">{year}.{String(month + 1).padStart(2, '0')}</span>
+        <span 
+          onClick={() => setViewMode('months')}
+          className="text-sm font-bold text-white tracking-wide cursor-pointer hover:text-primary transition-colors"
+        >
+          {year}.{String(month + 1).padStart(2, '0')}
+        </span>
         <button type="button" onClick={goNext} className="p-1.5 rounded-lg hover:bg-white/5 text-text-muted hover:text-white">
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>
       {/* 요일 헤더 */}
-      <div className="grid grid-cols-7 gap-1 mb-1">
-        {weekdays.map((d) => (
-          <div key={d} className="text-center text-[10px] font-medium text-text-muted py-1">{d}</div>
-        ))}
+      <div className="grid grid-cols-7 gap-1 mb-1 border-b border-white/5 pb-1">
+        {weekdays.map((d, index) => {
+          const isWeekend = index === 0 || index === 6;
+          return (
+            <div 
+              key={d} 
+              className={`text-center text-[10px] font-bold uppercase tracking-wider py-1 ${
+                index === 0 
+                  ? 'text-danger/60' 
+                  : index === 6 
+                  ? 'text-primary/60' 
+                  : 'text-text-muted'
+              }`}
+            >
+              {d}
+            </div>
+          );
+        })}
       </div>
       {/* 날짜 그리드 */}
       <div className="grid grid-cols-7 gap-1">
-        {blanks.map((b) => <div key={`b-${b}`} />)}
+        {/* 이전 달 채워진 날짜들 */}
+        {prevMonthDays.map((day) => (
+          <button
+            type="button"
+            key={`prev-${day}`}
+            onClick={() => {
+              const target = new Date(year, month - 1, day);
+              if (month === 0) onChangeMonth(year - 1, 11);
+              else onChangeMonth(year, month - 1);
+              onSelect(target);
+            }}
+            className="h-9 rounded-lg text-xs text-white/20 hover:bg-white/5 transition-all font-medium"
+          >
+            {day}
+          </button>
+        ))}
+
+        {/* 이번 달 날짜들 */}
         {days.map((day) => {
           const thisDate = new Date(year, month, day);
+          const dayOfWeek = thisDate.getDay();
           const isSelected =
             selectedDate.getFullYear() === year &&
             selectedDate.getMonth() === month &&
             selectedDate.getDate() === day;
 
+          const today = new Date();
+          const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+
           return (
             <button type="button"
               key={day}
               onClick={() => onSelect(thisDate)}
-              className={`h-9 rounded-lg text-xs font-medium transition-all ${
+              className={`h-9 rounded-lg text-xs font-semibold relative flex flex-col items-center justify-center transition-all ${
                 isSelected
-                  ? 'bg-success text-background-dark font-bold shadow-[0_0_8px_rgba(34,197,94,0.4)]'
-                  : 'text-white/80 hover:bg-white/5'
+                  ? 'bg-primary text-white font-black shadow-[0_0_12px_rgba(59,130,246,0.4)] scale-105 z-10'
+                  : `${
+                      dayOfWeek === 0
+                        ? 'text-danger/70 hover:bg-danger/10'
+                        : dayOfWeek === 6
+                        ? 'text-primary/70 hover:bg-primary/10'
+                        : 'text-white/80 hover:bg-white/5'
+                    }`
               }`}
             >
-              {day}
+              <span>{day}</span>
+              {isToday && !isSelected && (
+                <span className="absolute bottom-1 w-1 h-1 bg-primary rounded-full"></span>
+              )}
             </button>
           );
         })}
+
+        {/* 다음 달 채워진 날짜들 */}
+        {nextMonthDays.map((day) => (
+          <button
+            type="button"
+            key={`next-${day}`}
+            onClick={() => {
+              const target = new Date(year, month + 1, day);
+              if (month === 11) onChangeMonth(year + 1, 0);
+              else onChangeMonth(year, month + 1);
+              onSelect(target);
+            }}
+            className="h-9 rounded-lg text-xs text-white/20 hover:bg-white/5 transition-all font-medium"
+          >
+            {day}
+          </button>
+        ))}
       </div>
+      
+      {/* TODAY Quick Preset Button */}
+      <button
+        type="button"
+        onClick={() => {
+          const today = new Date();
+          onChangeMonth(today.getFullYear(), today.getMonth());
+          onSelect(today);
+        }}
+        className="w-full mt-3 py-2.5 text-xs font-black text-primary hover:text-white bg-background-dark/50 hover:bg-primary/10 border border-white/5 rounded-xl transition-all text-center tracking-wider active:scale-[0.98]"
+      >
+        오늘 날짜로 설정
+      </button>
     </div>
   );
 }
@@ -203,7 +390,7 @@ function MonthPicker({
               onClick={() => onSelect(year, i)}
               className={`h-10 rounded-lg text-sm font-medium transition-all ${
                 isSelected
-                  ? 'bg-success text-background-dark font-bold shadow-[0_0_8px_rgba(34,197,94,0.4)]'
+                  ? 'bg-primary text-white font-bold shadow-[0_0_8px_rgba(59,130,246,0.4)]'
                   : 'text-white/70 hover:bg-white/5 hover:text-white'
               }`}
             >
@@ -248,7 +435,7 @@ function YearPicker({
               onClick={() => onSelect(yr)}
               className={`h-10 rounded-lg text-sm font-medium transition-all ${
                 isSelected
-                  ? 'bg-success text-background-dark font-bold shadow-[0_0_8px_rgba(34,197,94,0.4)]'
+                  ? 'bg-primary text-white font-bold shadow-[0_0_8px_rgba(59,130,246,0.4)]'
                   : 'text-white/70 hover:bg-white/5 hover:text-white'
               }`}
             >
