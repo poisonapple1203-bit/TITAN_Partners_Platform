@@ -3,7 +3,6 @@ import { startOfDay, endOfDay } from 'date-fns';
 import { Pencil, Trash2, Check, X } from 'lucide-react';
 import { useProfitStore, parseRecordDate, type ProfitRecord } from '../../store/useProfitStore';
 import { ConfirmModal } from '../ConfirmModal';
-import { getDisplayName } from '../../utils/userUtils';
 
 export function ProfitHistoryTable() {
   const records = useProfitStore((state) => state.records);
@@ -35,8 +34,6 @@ export function ProfitHistoryTable() {
     });
   
   const totalProfit = filteredRecords.reduce((acc, r) => acc + r.profit, 0);
-  const isPositiveTotal = totalProfit > 0;
-  const isNegativeTotal = totalProfit < 0;
 
   // 수정 시작: 해당 행을 입력 필드로 전환
   const handleEditStart = (record: ProfitRecord) => {

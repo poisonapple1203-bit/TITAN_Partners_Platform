@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { ROIInputForm } from '../components/roi/ROIInputForm';
 import { ROIHistoryTable } from '../components/roi/ROIHistoryTable';
-import { initROISync, useROIStore } from '../store/useROIStore';
+import { initROISync } from '../store/useROIStore';
 
 export default function ROI() {
   const navigate = useNavigate();
