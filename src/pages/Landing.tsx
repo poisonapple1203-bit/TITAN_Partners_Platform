@@ -3,36 +3,37 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LogIn } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
+import { auth } from '../lib/firebase';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 export function Landing() {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setIsLoading(true);
-    
-    // Mock Google Login delay
-    setTimeout(() => {
-      // Simulate random logic: 50% chance of new user (no nickname) or existing user
-      const isNewUser = Math.random() > 0.5;
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
       
-      const mockUser = {
-        id: `google-user-${Date.now()}`,
-        name: 'Mock User',
-        email: 'user@example.com',
-        photoUrl: 'https://lh3.googleusercontent.com/a/default-user=s96-c',
-        nickname: isNewUser ? undefined : 'TitanInvestor',
+      const loggedInUser = {
+        id: user.uid,
+        name: user.displayName || '사용자',
+        email: user.email || '',
+        photoUrl: user.photoURL || undefined,
+        nickname: user.displayName || undefined,
       };
       
-      login(mockUser);
-      
-      if (isNewUser) {
-        navigate('/signup');
-      } else {
-        navigate('/main');
-      }
-    }, 1200);
+      login(loggedInUser);
+      navigate('/main');
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      alert("로그인 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
