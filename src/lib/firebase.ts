@@ -4,7 +4,7 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCW7OwDJn4vM0tPObuxXzh9Z9vSpVLB6QY",
+  apiKey: "AIzaSyCW7OwDJn4vM0tPObuxXzh9Z9vSpvLB6QY",
   authDomain: "titan-partners.firebaseapp.com",
   databaseURL: "https://titan-partners-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "titan-partners",
