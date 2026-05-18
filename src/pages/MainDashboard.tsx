@@ -120,7 +120,7 @@ export function MainDashboard() {
                   🔒 게스트 모드
                 </span>
               )}
-              <span className="text-white ml-0.5">.</span>
+              <span className="text-white -ml-1.5">.</span>
             </h2>
           </div>
         </section>
