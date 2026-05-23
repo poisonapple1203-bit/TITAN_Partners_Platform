@@ -60,8 +60,8 @@ export const useProfitStore = create<ProfitState>()(
   immer((set) => ({
     records: [],
     tickers: ['SOXL', 'TQQQ'],
-    userNames: ['조핏', '봉핏'],
-    selectedUser: '조핏',
+    userNames: ['poisonapple1203', 'juribong2'],
+    selectedUser: 'poisonapple1203',
     selectedTicker: 'ALL',
     selectedPeriod: '전체',
     dateRange: { from: new Date(2020, 0, 1), to: new Date() },
@@ -145,9 +145,13 @@ export const initProfitSync = () => {
     const records: ProfitRecord[] = [];
     snapshot.forEach((docSnap) => {
       const data = docSnap.data();
+      let mappedUser = data.user;
+      if (mappedUser === '조핏') mappedUser = 'poisonapple1203';
+      else if (mappedUser === '봉핏') mappedUser = 'juribong2';
+
       records.push({
         id: docSnap.id,
-        user: data.user,
+        user: mappedUser,
         ticker: data.ticker,
         date: data.date,
         time: data.time,
