@@ -32,6 +32,7 @@ interface ProfitState {
   selectedTicker: string;
   selectedPeriod: PeriodType;
   dateRange: DateRange;
+  syncError: string | null;
   
   setSelectedPeriod: (period: PeriodType) => void;
   setSelectedUser: (user: string) => void;
@@ -45,6 +46,7 @@ interface ProfitState {
   addTicker: (ticker: string) => void;
   deleteTicker: (ticker: string) => void;
   setRecords: (records: ProfitRecord[]) => void;
+  setSyncError: (error: string | null) => void;
 }
 
 // 레코드 날짜 문자열("YYYY.MM.DD")을 Date로 파싱하는 유틸
@@ -65,6 +67,7 @@ export const useProfitStore = create<ProfitState>()(
     selectedTicker: 'ALL',
     selectedPeriod: '전체',
     dateRange: { from: new Date(2020, 0, 1), to: new Date() },
+    syncError: null,
     
     setSelectedPeriod: (period) => set((state) => {
       state.selectedPeriod = period;
@@ -89,6 +92,7 @@ export const useProfitStore = create<ProfitState>()(
     setDateRange: (range) => set((state) => { state.dateRange = range; }),
     
     setRecords: (records) => set((state) => { state.records = records; }),
+    setSyncError: (error) => set((state) => { state.syncError = error; }),
     
     addRecord: async (recordData) => {
       try {
@@ -160,9 +164,11 @@ export const initProfitSync = () => {
       });
     });
     useProfitStore.getState().setRecords(records);
+    useProfitStore.getState().setSyncError(null);
     console.log(`[Firestore] Profit records synced: ${records.length} records ✓`);
   }, (error) => {
     console.error('[Firestore] Error subscribing to profit records:', error);
+    useProfitStore.getState().setSyncError(error.message);
   });
 
   return unsubscribe;

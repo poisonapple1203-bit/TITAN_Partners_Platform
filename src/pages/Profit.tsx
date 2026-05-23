@@ -16,6 +16,8 @@ export function Profit() {
   const selectedPeriod = useProfitStore((state) => state.selectedPeriod);
   const setSelectedPeriod = useProfitStore((state) => state.setSelectedPeriod);
   const isGuest = useAuthStore((state) => state.isGuest);
+  const syncError = useProfitStore((state) => state.syncError);
+  const totalRecordsCount = useProfitStore((state) => state.records.length);
 
   useEffect(() => {
     const unsubscribe = initProfitSync();
@@ -40,6 +42,17 @@ export function Profit() {
         transition={{ duration: 0.3 }}
         className={`flex-1 p-4 md:p-6 flex flex-col gap-6 ${isGuest ? 'sensitive-data' : ''}`}
       >
+        {syncError ? (
+          <div className="bg-danger/10 border border-danger/20 text-danger text-xs px-4 py-3 rounded-2xl flex flex-col gap-1">
+            <span className="font-bold">⚠️ Firestore 동기화 오류 발생</span>
+            <span className="font-mono">{syncError}</span>
+            <span className="text-white/40 mt-1">※ Firebase 보안 규칙(Security Rules)이나 네트워크 상태를 확인하세요.</span>
+          </div>
+        ) : (
+          <div className="text-[10px] text-white/20 text-right -mb-4 px-1">
+            ✓ Firestore 연결 상태 양호 (동기화된 총 레코드: {totalRecordsCount}개)
+          </div>
+        )}
         <section>
           <ProfitInputForm />
         </section>

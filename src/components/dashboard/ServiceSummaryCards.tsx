@@ -30,10 +30,10 @@ export function ServiceSummaryCards() {
     
     // 봉핏 조건
     if (nameStr.includes('봉핏') || idStr.includes('bong') || idStr.includes('juribong2')) {
-      return { asset: 'user-2', profit: '봉핏', roi: 'B', displayName: '봉핏' };
+      return { asset: 'user-2', profit: 'juribong2', roi: 'B', displayName: '봉핏' };
     }
     // 기본값: 조핏 (poisonapple1203 등)
-    return { asset: 'user-1', profit: '조핏', roi: 'A', displayName: '조홍길동' };
+    return { asset: 'user-1', profit: 'poisonapple1203', roi: 'A', displayName: '조홍길동' };
   }, [authUser]);
 
   // 동적으로 AssetStore 유저 동기화
